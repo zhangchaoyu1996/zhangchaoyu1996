@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        .box {
+            width: 80%;
+            height: 50%;
+            border: 1px solid #000;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+        .key {
+            width: 12.5%;
+            height: 100%;
+            border: 1px solid #000;
+            box-sizing: border-box;
+            float: left;
+        }
+        .key:nth-child(2n) {
+            background: #555;
+        }
+    </style>
+    <script>
+        window.onload = function (ev) {
+            var keys=document.querySelectorAll(".key");
+            var hash = {
+                49: {
+                    div: 0,
+                    sound:400+400*(1/8)
+                },
+                50: {
+                    div: 1,
+                    sound:400+400*(2/8)
+                },
+                51: {
+                    div: 2,
+                    sound:400+400*(3/8)
+                },
+                52: {
+                    div: 3,
+                    sound:400+400*(4/8)
+                },
+                53: {
+                    div: 4,
+                    sound:400+400*(5/8)
+                },
+                54: {
+                    div: 5,
+                    sound:400+400*(6/8)
+                },
+                55: {
+                    div: 6,
+                    sound:400+400*(7/8)
+                },
+                56: {
+                    div: 7,
+                    sound:400+400*(1)
+                }
+            }
+            var audio=new AudioContext();
+            var os;
+            var flag=true;
+            document.onkeydown = function (ev) {
+                var key = ev.keyCode;
+                if(!flag){
+                    return
+                }
+                flag=false
+                os=audio.createOscillator();
+                var as=audio.createAnalyser();
+                var gain=audio.createGain();
+                os.connect(as)
+                os.connect(gain)
+                gain.connect(audio.destination);
+                os.frequency.setValueAtTime(hash[key].sound,audio.currentTime)
+                os.start(0)
+                keys[hash[key].div].style.boxShadow="0 0 10px #000"
+            }
+            document.onkeyup = function (ev) {
+                flag=true;
+                var key = ev.keyCode;
+                os.stop(audio.currentTime);
+                keys[hash[key].div].style.boxShadow="none"
+            }
+        }
+    </script>
+
+</head>
+<body>
+<div class="box">
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+    <div class="key"></div>
+</div>
+</body>
+</html>
